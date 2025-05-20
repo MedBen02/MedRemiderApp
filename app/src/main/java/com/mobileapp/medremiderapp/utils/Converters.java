@@ -15,7 +15,7 @@ public class Converters {
     public static Long dateToTimestamp(Date date) {
         return date == null ? null : date.getTime();
     }
-
+    //comment
     @TypeConverter
     public static Calendar fromLong(Long value) {
         Calendar cal = Calendar.getInstance();

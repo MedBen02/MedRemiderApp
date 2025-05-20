@@ -14,7 +14,7 @@ import com.mobileapp.medremiderapp.model.User;
 import com.mobileapp.medremiderapp.utils.Converters;
 
 @Database(entities = {User.class, Medicine.class, Reminder.class, MedNotification.class},
-        version = 1,
+        version = 2,
         exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
@@ -35,6 +35,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             AppDatabase.class,
                             "med_reminder.db"
                     )
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }

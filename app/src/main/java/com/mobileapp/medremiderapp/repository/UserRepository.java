@@ -8,6 +8,7 @@ import com.mobileapp.medremiderapp.database.AppDatabase;
 import com.mobileapp.medremiderapp.database.UserDao;
 import com.mobileapp.medremiderapp.model.User;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,16 +59,40 @@ public class UserRepository {
         });
     }
 
-    public void getUserByUsername(String username, RepositoryCallback<User> callback) {
+    public void updateName(int id, String name, RepositoryCallback<Void> callback) {
         executorService.execute(() -> {
-            User user = userDao.getUserByUsername(username);
-            if (callback != null) callback.onComplete(user);
+            userDao.updateName(id, name);
+            if (callback != null) callback.onComplete(null);
+        });
+    }
+
+    public void updateBirthDay(int id, Date birthDay, RepositoryCallback<Void> callback) {
+        executorService.execute(() -> {
+            userDao.updateBirthDay(id, birthDay);
+            if (callback != null) callback.onComplete(null);
+        });
+    }
+
+    public void findUsersByName(String name, RepositoryCallback<LiveData<List<User>>> callback) {
+        executorService.execute(() -> {
+            LiveData<List<User>> users = userDao.findUsersByName(name);
+            if (callback != null) callback.onComplete(users);
+        });
+    }
+
+    public void getUsersBornAfter(Date date, RepositoryCallback<LiveData<List<User>>> callback) {
+        executorService.execute(() -> {
+            LiveData<List<User>> users = userDao.getUsersBornAfter(date);
+            if (callback != null) callback.onComplete(users);
         });
     }
 
     public LiveData<List<User>> getAllUsers() {
-        // You may want to change DAO method to return LiveData<List<User>> for this to work reactively
-        return null; // Or implement a synchronous method with a callback if you want
+        return userDao.getAllUsers();
+    }
+
+    public List<User> getAllImmediate() {
+        return userDao.getAllUsersImmediate();
     }
 
     public void deleteAllUsers(RepositoryCallback<Void> callback) {

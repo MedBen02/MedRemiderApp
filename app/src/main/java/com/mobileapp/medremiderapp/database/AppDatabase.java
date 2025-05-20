@@ -10,15 +10,18 @@ import androidx.room.TypeConverters;
 import com.mobileapp.medremiderapp.model.MedNotification;
 import com.mobileapp.medremiderapp.model.Medicine;
 import com.mobileapp.medremiderapp.model.Reminder;
+import com.mobileapp.medremiderapp.model.User;
 import com.mobileapp.medremiderapp.utils.Converters;
 
-@Database(entities = {Medicine.class, Reminder.class, MedNotification.class},
+@Database(entities = {User.class, Medicine.class, Reminder.class, MedNotification.class},
         version = 1,
         exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     private static volatile AppDatabase INSTANCE;
 
+
+    public abstract UserDao userDao();
     public abstract MedicineDao medicineDao();
     public abstract ReminderDao reminderDao();
     public abstract NotificationDao notificationDao();
@@ -31,7 +34,8 @@ public abstract class AppDatabase extends RoomDatabase {
                             context.getApplicationContext(),
                             AppDatabase.class,
                             "med_reminder.db"
-                    ).build();
+                    )
+                            .build();
                 }
             }
         }

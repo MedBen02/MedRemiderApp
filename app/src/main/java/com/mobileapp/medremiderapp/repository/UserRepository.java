@@ -26,65 +26,88 @@ public class UserRepository {
 
     public void insert(User user, RepositoryCallback<Void> callback) {
         executorService.execute(() -> {
-            userDao.insert(user);
-            if (callback != null) callback.onComplete(null);
+            try {
+                userDao.insert(user);
+                if (callback != null) callback.onComplete(null);
+            } catch (Exception e) {
+                if (callback != null) callback.onError(e);
+            }
         });
     }
 
     public void update(User user, RepositoryCallback<Integer> callback) {
         executorService.execute(() -> {
-            int rowsUpdated = userDao.update(user);
-            if (callback != null) callback.onComplete(rowsUpdated);
+            try {
+                int rowsUpdated = userDao.update(user);
+                if (callback != null) callback.onComplete(rowsUpdated);
+            } catch (Exception e) {
+                if (callback != null) callback.onError(e);
+            }
         });
     }
 
     public void delete(User user, RepositoryCallback<Integer> callback) {
         executorService.execute(() -> {
-            int rowsDeleted = userDao.delete(user);
-            if (callback != null) callback.onComplete(rowsDeleted);
+            try {
+                int rowsDeleted = userDao.delete(user);
+                if (callback != null) callback.onComplete(rowsDeleted);
+            } catch (Exception e) {
+                if (callback != null) callback.onError(e);
+            }
         });
     }
 
     public void login(String username, String password, RepositoryCallback<User> callback) {
         executorService.execute(() -> {
-            User user = userDao.login(username, password);
-            if (callback != null) callback.onComplete(user);
+            try {
+                User user = userDao.login(username, password);
+                if (callback != null) callback.onComplete(user);
+            } catch (Exception e) {
+                if (callback != null) callback.onError(e);
+            }
         });
     }
 
     public void getUserById(int id, RepositoryCallback<User> callback) {
         executorService.execute(() -> {
-            User user = userDao.getUserById(id);
-            if (callback != null) callback.onComplete(user);
+            try {
+                User user = userDao.getUserById(id);
+                if (callback != null) callback.onComplete(user);
+            } catch (Exception e) {
+                if (callback != null) callback.onError(e);
+            }
         });
     }
 
     public void updateName(int id, String name, RepositoryCallback<Void> callback) {
         executorService.execute(() -> {
-            userDao.updateName(id, name);
-            if (callback != null) callback.onComplete(null);
+            try {
+                userDao.updateName(id, name);
+                if (callback != null) callback.onComplete(null);
+            } catch (Exception e) {
+                if (callback != null) callback.onError(e);
+            }
         });
     }
 
     public void updateBirthDay(int id, Date birthDay, RepositoryCallback<Void> callback) {
         executorService.execute(() -> {
-            userDao.updateBirthDay(id, birthDay);
-            if (callback != null) callback.onComplete(null);
+            try {
+                userDao.updateBirthDay(id, birthDay);
+                if (callback != null) callback.onComplete(null);
+            } catch (Exception e) {
+                if (callback != null) callback.onError(e);
+            }
         });
     }
 
-    public void findUsersByName(String name, RepositoryCallback<LiveData<List<User>>> callback) {
-        executorService.execute(() -> {
-            LiveData<List<User>> users = userDao.findUsersByName(name);
-            if (callback != null) callback.onComplete(users);
-        });
+    // These return LiveData directly — no need to wrap in background thread
+    public LiveData<List<User>> findUsersByName(String name) {
+        return userDao.findUsersByName(name);
     }
 
-    public void getUsersBornAfter(Date date, RepositoryCallback<LiveData<List<User>>> callback) {
-        executorService.execute(() -> {
-            LiveData<List<User>> users = userDao.getUsersBornAfter(date);
-            if (callback != null) callback.onComplete(users);
-        });
+    public LiveData<List<User>> getUsersBornAfter(Date date) {
+        return userDao.getUsersBornAfter(date);
     }
 
     public LiveData<List<User>> getAllUsers() {
@@ -97,13 +120,33 @@ public class UserRepository {
 
     public void deleteAllUsers(RepositoryCallback<Void> callback) {
         executorService.execute(() -> {
-            userDao.deleteAllUsers();
-            if (callback != null) callback.onComplete(null);
+            try {
+                userDao.deleteAllUsers();
+                if (callback != null) callback.onComplete(null);
+            } catch (Exception e) {
+                if (callback != null) callback.onError(e);
+            }
         });
     }
 
-    // Callback interface to return results asynchronously
+    public void getUserByUsername(String username, RepositoryCallback<User> callback) {
+        executorService.execute(() -> {
+            try {
+                User user = userDao.getUserByUsername(username);
+                if (callback != null) callback.onComplete(user);
+            } catch (Exception e) {
+                if (callback != null) callback.onError(e);
+            }
+        });
+    }
+
+    public void shutdown() {
+        executorService.shutdown();
+    }
+
+    // Enhanced Callback with error handling
     public interface RepositoryCallback<T> {
         void onComplete(T result);
+        default void onError(Exception e) {} // Optional to override
     }
 }

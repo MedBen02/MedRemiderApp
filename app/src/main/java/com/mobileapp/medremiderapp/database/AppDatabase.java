@@ -35,7 +35,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             AppDatabase.class,
                             "med_reminder.db"
                     )
-                            .fallbackToDestructiveMigration()
+//                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }

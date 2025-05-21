@@ -3,7 +3,6 @@ package com.mobileapp.medremiderapp.model;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
@@ -20,12 +19,6 @@ public class User {
     private String name;
     @ColumnInfo(name = "birthDay")
     private Date birthDay;
-
-    @Ignore
-    public User(@NonNull String username, @NonNull String password) {
-        this.username = username;
-        this.password = password;
-    }
 
     public User(@NonNull String username, @NonNull String password, String name, Date birthDay) {
         this.username = username;

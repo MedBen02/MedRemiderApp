@@ -55,6 +55,22 @@ public class UserViewModel extends AndroidViewModel {
         });
     }
 
+    public void updateUser(User user) {
+        repository.update(user, new UserRepository.RepositoryCallback<Integer>() {
+            @Override
+            public void onComplete(Integer result) {
+                if (result > 0) {
+                    loggedInUser.postValue(user);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                // Handle error
+            }
+        });
+    }
+
     public void checkLoggedInUser() {
         boolean isLoggedIn = sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false);
         if (isLoggedIn) {

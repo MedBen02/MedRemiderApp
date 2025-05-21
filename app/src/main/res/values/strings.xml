@@ -1,9 +1,16 @@
 <resources>
-    <string name="app_name">MedRemiderApp</string>
+    <string name="app_name">MedReminderApp</string>
     <string name="title_home">Home</string>
     <string name="title_medicine">Meds</string>
     <string name="title_profile">Profile</string>
     <string name="logout">LOGOUT</string>
     <string name="profile_image">Profile image</string>
     <string name="add_medicine">Add medicine</string>
+    <string name="birth_date">Birth date :</string>
+    <string name="username">Username :</string>
+    <string name="full_name">Full Name :</string>
+    <string name="edit">edit profile</string>
+    <string name="save">save</string>
+    <string name="edit_profile">edit profile</string>
+    <string name="name_cannot_be_empty">name cannot be empty</string>
 </resources>

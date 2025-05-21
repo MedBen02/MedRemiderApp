@@ -82,9 +82,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void navigateToAuth() {
-        // Clear back stack and navigate to login
-        navController.navigate(R.id.loginFragment);
+    public void navigateToAuth() {
+        runOnUiThread(() -> {
+            try {
+                NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+
+                // Clear back stack completely
+                NavOptions navOptions = new NavOptions.Builder()
+                        .setPopUpTo(R.id.mobile_navigation, true)
+                        .build();
+
+                navController.navigate(R.id.loginFragment, null, navOptions);
+            } catch (Exception e) {
+                // Fallback if navigation fails
+                recreate();
+            }
+        });
     }
 
     public void onAuthSuccess() {

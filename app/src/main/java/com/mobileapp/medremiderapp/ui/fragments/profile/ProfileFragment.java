@@ -133,57 +133,65 @@ public class ProfileFragment extends Fragment {
         binding.btnEditProfile.setOnClickListener(v -> showEditProfileDialog());
     }
 
-     private void showEditProfileDialog() {
-         isEditingProfile = true;
+    private void showEditProfileDialog() {
+        isEditingProfile = true;
+        User currentUser = userViewModel.loggedInUser.getValue();
+        if (currentUser == null) return;
 
-         User currentUser = userViewModel.loggedInUser.getValue();
-         if (currentUser == null) return;
-    
-         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-         DialogEditProfileBinding dialogBinding = DialogEditProfileBinding.inflate(getLayoutInflater());
-    
-         // Initialize fields with current user data
-         dialogBinding.etEditFullName.setText(currentUser.getName());
-         dialogBinding.etEditUsername.setText(currentUser.getUsername());
-         if (currentUser.getBirthDay() != null) {
-             dialogBinding.etEditBirthDay.setText(dateFormat.format(currentUser.getBirthDay()));
-         }
-    
-         // Set up date picker
-         dialogBinding.etEditBirthDay.setOnClickListener(v -> showDatePicker(dialogBinding.etEditBirthDay));
-    
-         builder.setView(dialogBinding.getRoot())
-                 .setTitle(R.string.edit_profile);
-    
-         AlertDialog dialog = builder.create();
-    
-         dialogBinding.btnSaveProfile.setOnClickListener(v -> {
-             String newName = dialogBinding.etEditFullName.getText().toString().trim();
-             Date newBirthDate = null;
-             try {
-                 if (!dialogBinding.etEditBirthDay.getText().toString().isEmpty()) {
-                     newBirthDate = dateFormat.parse(dialogBinding.etEditBirthDay.getText().toString());
-                 }
-             } catch (Exception e) {
-                 e.printStackTrace();
-             }
-    
-             if (newName.isEmpty()) {
-                 Toast.makeText(requireContext(), R.string.name_cannot_be_empty, Toast.LENGTH_SHORT).show();
-                 return;
-             }
-    
-             // Update user
-             currentUser.setName(newName);
-             currentUser.setBirthDay(newBirthDate);
-    
-             // Save changes (this will automatically update the UI through LiveData)
-             userViewModel.updateUser(currentUser);
-             dialog.dismiss(); // Just dismiss the dialog, no navigation
-         });
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        DialogEditProfileBinding dialogBinding = DialogEditProfileBinding.inflate(getLayoutInflater());
 
-         dialog.show();
-     }
+        // Initialize fields with current user data
+        dialogBinding.etEditFullName.setText(currentUser.getName());
+        dialogBinding.etEditUsername.setText(currentUser.getUsername());
+        if (currentUser.getBirthDay() != null) {
+            dialogBinding.etEditBirthDay.setText(dateFormat.format(currentUser.getBirthDay()));
+        }
+
+        // Set up date picker
+        dialogBinding.etEditBirthDay.setOnClickListener(v -> showDatePicker(dialogBinding.etEditBirthDay));
+
+        builder.setView(dialogBinding.getRoot())
+                .setTitle(R.string.edit_profile);
+
+        AlertDialog dialog = builder.create();
+
+        dialogBinding.btnSaveProfile.setOnClickListener(v -> {
+            String newName = dialogBinding.etEditFullName.getText().toString().trim();
+            Date newBirthDate = null;
+            try {
+                if (!dialogBinding.etEditBirthDay.getText().toString().isEmpty()) {
+                    newBirthDate = dateFormat.parse(dialogBinding.etEditBirthDay.getText().toString());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (newName.isEmpty()) {
+                Toast.makeText(requireContext(), R.string.name_cannot_be_empty, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Create a new user object with updated values
+            User updatedUser = new User(
+                    currentUser.getUsername(),
+                    currentUser.getPassword(),
+                    newName,
+                    newBirthDate
+            );
+            updatedUser.setId(currentUser.getId());
+
+            // Save changes
+            userViewModel.updateUser(updatedUser);
+
+            // Show success message
+            Toast.makeText(requireContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show();
+
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
     private void showDatePicker(EditText editText) {
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);

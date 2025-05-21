@@ -36,9 +36,14 @@ public class UserViewModel extends AndroidViewModel {
                 errorMessage.postValue("Username already exists.");
             } else {
                 repository.insert(user, result -> {
-                    saveUserToPrefs(user); // Save user data on registration
-                    registrationSuccess.postValue(true);
-                    loggedInUser.postValue(user);
+                    // Get the full user object with ID from database
+                    repository.getUserByUsername(user.getUsername(), registeredUser -> {
+                        if (registeredUser != null) {
+                            saveUserToPrefs(registeredUser);
+                            loggedInUser.postValue(registeredUser); // Update with complete user object
+                            registrationSuccess.postValue(true);
+                        }
+                    });
                 });
             }
         });
@@ -60,13 +65,15 @@ public class UserViewModel extends AndroidViewModel {
             @Override
             public void onComplete(Integer result) {
                 if (result > 0) {
+                    // Update both SharedPreferences and LiveData
+                    saveUserToPrefs(user);
                     loggedInUser.postValue(user);
                 }
             }
 
             @Override
             public void onError(Exception e) {
-                // Handle error
+                errorMessage.postValue("Failed to update profile");
             }
         });
     }

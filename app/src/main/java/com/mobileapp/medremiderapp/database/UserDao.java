@@ -54,5 +54,4 @@ public interface UserDao {
     @Query("SELECT * FROM users")
     List<User> getAllUsersImmediate(); // Non-reactive version
 
-
 }

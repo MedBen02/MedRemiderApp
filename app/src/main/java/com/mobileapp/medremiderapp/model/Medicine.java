@@ -1,9 +1,17 @@
 package com.mobileapp.medremiderapp.model;
 
+import static androidx.room.ForeignKey.CASCADE;
+
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "Medicines")
+@Entity(tableName = "Medicines",
+        foreignKeys = @ForeignKey(entity = User.class,
+                parentColumns = "id",
+                childColumns = "userId",
+                onDelete = CASCADE))
+
 public class Medicine {
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -11,20 +19,20 @@ public class Medicine {
     private String description;
     private String dose;
     private int stockQuantity;
+    private int userId;
 
     public Medicine() {
     }
 
-    public Medicine(String name, String description, String dose, int stockQuantity) {
+    public Medicine(String name, String description, String dose, int stockQuantity, int userId) {
         this.name = name;
         this.description = description;
         this.dose = dose;
         this.stockQuantity = stockQuantity;
+        this.userId = userId;
     }
 
-    public int getId() {
-        return id;
-    }
+    public int getId() {return id;}
 
     public void setId(int id) {
         this.id = id;
@@ -61,4 +69,8 @@ public class Medicine {
     public void setStockQuantity(int stockQuantity) {
         this.stockQuantity = stockQuantity;
     }
+
+    public int getUserId() {return userId;}
+
+    public void setUserId(int userId) {this.userId = userId;}
 }

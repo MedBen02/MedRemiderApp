@@ -32,4 +32,8 @@ public interface MedicineDao {
 
     @Query("SELECT * FROM Medicines WHERE name LIKE :searchQuery || '%'")
     LiveData<List<Medicine>> searchMedicines(String searchQuery);
+
+    @Query("SELECT * FROM Medicines WHERE userId = :userId")
+    LiveData<List<Medicine>> getMedicinesByUserId(int userId);
+
 }

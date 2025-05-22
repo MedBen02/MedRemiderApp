@@ -13,7 +13,11 @@
     <string name="save">save</string>
     <string name="edit_profile">edit profile</string>
     <string name="name_cannot_be_empty">name cannot be empty</string>
-    <string name="welcom_to_medreminder">Welcome to MedReminder</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
+    <string name="stockQuantity">stockQuantity</string>
+    <string name="description">Description</string>
+    <string name="name">Name</string>
+    <string name="dose">Dose</string>
+    <string name="pills_left">pills left</string>
 </resources>

@@ -10,6 +10,7 @@ import java.util.List;
 public class MedicineRepository {
     private MedicineDao medicineDao;
     private LiveData<List<Medicine>> allMedicines;
+    private LiveData<List<Medicine>> medicinesByUserId;
 
     public MedicineRepository(Application application) {
         AppDatabase db = AppDatabase.getInstance(application);
@@ -19,6 +20,10 @@ public class MedicineRepository {
 
     public LiveData<List<Medicine>> getAllMedicines() {
         return allMedicines;
+    }
+    public LiveData<List<Medicine>> getMedicinesByUserId(int userId) {
+        medicinesByUserId = medicineDao.getMedicinesByUserId(userId);
+        return medicinesByUserId;
     }
 
     public void insert(Medicine medicine) {

@@ -10,6 +10,8 @@ import com.mobileapp.medremiderapp.model.User;
 import com.mobileapp.medremiderapp.repository.UserRepository;
 import com.google.gson.Gson;
 
+import java.net.HttpCookie;
+
 public class UserViewModel extends AndroidViewModel {
 
     private static final String PREFS_NAME = "UserPrefs";
@@ -113,5 +115,9 @@ public class UserViewModel extends AndroidViewModel {
 
     public boolean isLoggedIn() {
         return sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false);
+    }
+
+    public MutableLiveData<User> getLoggedInUser() {
+        return loggedInUser;
     }
 }

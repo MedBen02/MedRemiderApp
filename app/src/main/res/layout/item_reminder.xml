@@ -41,7 +41,7 @@
                 android:id="@+id/tvStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/status_background"
+                android:background="@drawable/status_missed_background"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="4dp"
                 android:text="Missed"

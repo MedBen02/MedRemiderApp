@@ -14,4 +14,10 @@
     <color name="green">#4CAF50</color>
     <color name="red">#F44336</color>
     <color name="colorPrimaryLight">#7986CB</color>
+    <!-- For overlay approach -->
+    <color name="selected_item_overlay">#60000000</color> <!-- 60% opacity black -->
+
+    <!-- For background tint approach -->
+    <color name="card_normal_color">#FFFFFF</color>  <!-- White -->
+    <color name="card_selected_color">#EEEEEE</color> <!-- Light gray -->
 </resources>

@@ -2,6 +2,9 @@ package com.mobileapp.medremiderapp.model;
 
 import static androidx.room.ForeignKey.CASCADE;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
@@ -12,7 +15,7 @@ import androidx.room.PrimaryKey;
                 childColumns = "userId",
                 onDelete = CASCADE))
 
-public class Medicine {
+public class Medicine implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String name;
@@ -73,4 +76,40 @@ public class Medicine {
     public int getUserId() {return userId;}
 
     public void setUserId(int userId) {this.userId = userId;}
+
+    protected Medicine(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        description = in.readString();
+        dose = in.readString();
+        stockQuantity = in.readInt();
+        userId = in.readInt();
+    }
+
+    public static final Creator<Medicine> CREATOR = new Creator<Medicine>() {
+        @Override
+        public Medicine createFromParcel(Parcel in) {
+            return new Medicine(in);
+        }
+
+        @Override
+        public Medicine[] newArray(int size) {
+            return new Medicine[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(name);
+        dest.writeString(description);
+        dest.writeString(dose);
+        dest.writeInt(stockQuantity);
+        dest.writeInt(userId);
+    }
 }

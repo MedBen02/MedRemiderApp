@@ -20,4 +20,9 @@
     <string name="name">Name</string>
     <string name="dose">Dose</string>
     <string name="pills_left">pills left</string>
+    <string name="delete_medicine">delete medicine</string>
+    <string name="edit_medicine">edit medicine</string>
+    <string name="back">back</string>
+    <string name="add_reminder">add reminder</string>
+    <string name="reminders">Reminders</string>
 </resources>

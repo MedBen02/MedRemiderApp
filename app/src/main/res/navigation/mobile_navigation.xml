@@ -67,6 +67,22 @@
         <action
             android:id="@+id/action_medicine_to_home"
             app:destination="@id/navigation_home" />
+
+        <action
+            android:id="@+id/action_medicine_to_details"
+            app:destination="@id/medicineDetailsFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/medicineDetailsFragment"
+        android:name="com.mobileapp.medremiderapp.ui.fragments.medicine.MedicineDetailsFragment"
+        android:label="Medicine Details"
+        tools:layout="@layout/fragment_medicine_details">
+
+        <argument
+            android:name="medicine"
+            app:argType="com.mobileapp.medremiderapp.model.Medicine" />
     </fragment>
 
     <fragment

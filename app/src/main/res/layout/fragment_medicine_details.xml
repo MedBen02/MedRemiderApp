@@ -9,28 +9,34 @@
     android:paddingTop="?attr/actionBarSize"
     tools:context=".ui.fragments.medicine.MedicineDetailsFragment">
 
+    <!-- Main ScrollView - Full height with bottom padding -->
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
         android:padding="10dp"
-        app:layout_constraintBottom_toTopOf="@id/fabContainerDetails"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="70dp"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="15dp"
-            >
+            android:paddingBottom="100dp"> <!-- Space for buttons -->
 
+            <!-- Medicine Name -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -40,18 +46,20 @@
                     android:textSize="18sp"/>
 
                 <EditText
-                    android:id="@+id/tvName"
+                    android:id="@+id/etName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginVertical="5dp"/>
             </LinearLayout>
 
+            <!-- Dose -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -61,18 +69,20 @@
                     android:textSize="18sp"/>
 
                 <EditText
-                    android:id="@+id/tvDose"
+                    android:id="@+id/etDose"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginVertical="5dp"/>
             </LinearLayout>
 
+            <!-- Stock Quantity -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -82,7 +92,7 @@
                     android:textSize="18sp"/>
 
                 <EditText
-                    android:id="@+id/tvStock"
+                    android:id="@+id/etStock"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -90,11 +100,13 @@
                     android:inputType="number"/>
             </LinearLayout>
 
+            <!-- Description -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -104,17 +116,16 @@
                     android:textSize="18sp"/>
 
                 <EditText
-                    android:id="@+id/tvDescription"
+                    android:id="@+id/etDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginVertical="5dp"
-                    android:inputType="textImeMultiLine"/>
+                    android:inputType="textImeMultiLine"
+                    android:minLines="3"/>
             </LinearLayout>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="10dp"/>
 
+            <!-- Reminders Header -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -123,7 +134,7 @@
                 android:background="@drawable/status_pending_background"
                 android:paddingHorizontal="15dp"
                 android:paddingVertical="8dp"
-                android:layout_marginVertical="5dp">
+                android:layout_marginBottom="8dp">
 
                 <TextView
                     android:layout_width="0dp"
@@ -132,8 +143,7 @@
                     android:text="@string/reminders"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:textSize="15dp"
-                    />
+                    android:textSize="16sp"/>
 
                 <ImageButton
                     android:id="@+id/btn_add_reminder"
@@ -143,18 +153,20 @@
                     android:background="@drawable/baseline_add_5"
                     android:contentDescription="@string/add_reminder"
                     android:scaleType="centerInside"
-                    app:tint="@android:color/white" />
+                    app:tint="@android:color/white"/>
             </LinearLayout>
 
-            <ScrollView
+            <!-- Reminders List -->
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/remindersList"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                />
-
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:nestedScrollingEnabled="false"/>
         </LinearLayout>
     </ScrollView>
 
+    <!-- Action Buttons - Floating above content -->
     <LinearLayout
         android:id="@+id/fabContainerDetails"
         android:layout_width="wrap_content"
@@ -170,9 +182,8 @@
             android:id="@+id/btn_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="8dp"
             android:layout_marginEnd="8dp"
-            android:contentDescription="@string/back"
+            android:contentDescription="@string/save"
             android:src="@drawable/ic_save"
             app:backgroundTint="@color/purple_500"
             app:tint="@android:color/white"/>
@@ -181,7 +192,6 @@
             android:id="@+id/btn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="8dp"
             android:contentDescription="@string/back"
             android:src="@drawable/ic_arrow_back"
             app:backgroundTint="@color/purple_500"

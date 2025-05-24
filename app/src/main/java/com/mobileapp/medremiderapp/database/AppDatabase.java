@@ -13,6 +13,9 @@ import com.mobileapp.medremiderapp.model.Reminder;
 import com.mobileapp.medremiderapp.model.User;
 import com.mobileapp.medremiderapp.utils.Converters;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @Database(entities = {User.class, Medicine.class, Reminder.class, MedNotification.class},
         version = 2,
         exportSchema = false)
@@ -25,7 +28,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract MedicineDao medicineDao();
     public abstract ReminderDao reminderDao();
     public abstract NotificationDao notificationDao();
-
     public static AppDatabase getInstance(Context context) {
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {

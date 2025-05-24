@@ -52,6 +52,6 @@ public interface UserDao {
     LiveData<List<User>> getUsersBornAfter(Date date);
 
     @Query("SELECT * FROM users")
-    List<User> getAllUsersImmediate(); // Non-reactive version
+    List<User> getAllUsersImmediate();
 
 }

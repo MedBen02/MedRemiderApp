@@ -19,14 +19,19 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.mobileapp.medremiderapp.R;
 import com.mobileapp.medremiderapp.databinding.FragmentMedicineDetailsBinding;
 import com.mobileapp.medremiderapp.factory.MedicineViewModelFactory;
 import com.mobileapp.medremiderapp.model.Medicine;
+import com.mobileapp.medremiderapp.model.MedNotification;
 import com.mobileapp.medremiderapp.model.Reminder;
+import com.mobileapp.medremiderapp.model.DataFlowModels.ReminderWithNotifications;
 import com.mobileapp.medremiderapp.model.User;
+import com.mobileapp.medremiderapp.ui.adapters.ReminderAdapter;
 import com.mobileapp.medremiderapp.viewmodels.MedicineViewModel;
 import com.mobileapp.medremiderapp.viewmodels.NotificationViewModel;
 import com.mobileapp.medremiderapp.viewmodels.ReminderViewModel;
@@ -48,6 +53,7 @@ public class MedicineDetailsFragment extends Fragment {
     private NotificationViewModel notificationViewModel;
     private Medicine currentMedicine;
     private int currentUserId;
+    private ReminderAdapter reminderAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,15 +91,38 @@ public class MedicineDetailsFragment extends Fragment {
                 new MedicineViewModelFactory(requireActivity().getApplication(), currentUserId))
                 .get(MedicineViewModel.class);
 
+        // Setup RecyclerView for reminders
+        setupRemindersRecyclerView();
+
         // Get the medicine passed as argument
         if (getArguments() != null) {
             currentMedicine = getArguments().getParcelable("medicine");
             if (currentMedicine != null) {
                 bindMedicineData(currentMedicine);
+                loadRemindersForMedicine(currentMedicine.getId());
             }
         }
 
         setupListeners();
+    }
+
+    private void setupRemindersRecyclerView() {
+        reminderAdapter = new ReminderAdapter(new ArrayList<>());
+        binding.remindersList.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.remindersList.setAdapter(reminderAdapter);
+    }
+
+    private void loadRemindersForMedicine(int medicineId) {
+        medicineViewModel.getRemindersWithNotifications(medicineId).observe(getViewLifecycleOwner(), reminders -> {
+            if (reminders != null && !reminders.isEmpty()) {
+                reminderAdapter.reminderList.clear();
+                reminderAdapter.reminderList.addAll(reminders);
+                reminderAdapter.notifyDataSetChanged();
+            } else {
+                reminderAdapter.reminderList.clear();
+                reminderAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void bindMedicineData(Medicine medicine) {
@@ -203,6 +232,7 @@ public class MedicineDetailsFragment extends Fragment {
                                                 "Reminder and notifications saved successfully",
                                                 Toast.LENGTH_SHORT).show();
                                         dialog.dismiss();
+                                        loadRemindersForMedicine(currentMedicine.getId()); // Refresh the list
                                     });
                                 }
 

@@ -4,6 +4,7 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 import com.mobileapp.medremiderapp.database.AppDatabase;
 import com.mobileapp.medremiderapp.database.MedicineDao;
+import com.mobileapp.medremiderapp.model.DataFlowModels.ReminderWithNotifications;
 import com.mobileapp.medremiderapp.model.Medicine;
 import java.util.List;
 
@@ -36,5 +37,9 @@ public class MedicineRepository {
 
     public void delete(Medicine medicine) {
         new Thread(() -> medicineDao.delete(medicine)).start();
+    }
+
+    public LiveData<List<ReminderWithNotifications>> getRemindersWithNotifications(int medicineId) {
+        return medicineDao.getRemindersWithNotifications(medicineId);
     }
 }

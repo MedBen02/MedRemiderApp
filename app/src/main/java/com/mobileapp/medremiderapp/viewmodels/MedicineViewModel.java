@@ -3,6 +3,8 @@ package com.mobileapp.medremiderapp.viewmodels;
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+
+import com.mobileapp.medremiderapp.model.DataFlowModels.ReminderWithNotifications;
 import com.mobileapp.medremiderapp.model.Medicine;
 import com.mobileapp.medremiderapp.repository.MedicineRepository;
 import java.util.List;
@@ -38,5 +40,9 @@ public class MedicineViewModel extends AndroidViewModel {
 
     public LiveData<List<Medicine>> getMedicinesForCurrentUser() {
         return repository.getMedicinesByUserId(currentUserId);
+    }
+
+    public LiveData<List<ReminderWithNotifications>> getRemindersWithNotifications(int medicineId) {
+        return repository.getRemindersWithNotifications(medicineId);
     }
 }

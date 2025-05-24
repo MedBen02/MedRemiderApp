@@ -5,8 +5,10 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
+import com.mobileapp.medremiderapp.model.DataFlowModels.ReminderWithNotifications;
 import com.mobileapp.medremiderapp.model.Medicine;
 import java.util.List;
 
@@ -35,5 +37,9 @@ public interface MedicineDao {
 
     @Query("SELECT * FROM Medicines WHERE userId = :userId")
     LiveData<List<Medicine>> getMedicinesByUserId(int userId);
+
+    @Transaction
+    @Query("SELECT * FROM reminders WHERE medicineId = :medicineId")
+    LiveData<List<ReminderWithNotifications>> getRemindersWithNotifications(int medicineId);
 
 }

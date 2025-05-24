@@ -67,7 +67,7 @@ public class HomeFragment extends Fragment implements
     }
 
     private void setupObservers() {
-        homeViewModel.getNotificationsForDate().observe(getViewLifecycleOwner(), notifications -> {
+        homeViewModel.getNotificationsWithDetails().observe(getViewLifecycleOwner(), notifications -> {
             notificationAdapter.notificationList.clear();
             notificationAdapter.notificationList.addAll(notifications);
             notificationAdapter.notifyDataSetChanged();

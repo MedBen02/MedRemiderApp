@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData;
 import com.mobileapp.medremiderapp.database.AppDatabase;
 import com.mobileapp.medremiderapp.database.NotificationDao;
 import com.mobileapp.medremiderapp.model.MedNotification;
+import com.mobileapp.medremiderapp.model.DataFlowModels.NotificationWithDetails;
+
 import java.util.List;
 
 public class MedNotificationRepository {
@@ -29,5 +31,9 @@ public class MedNotificationRepository {
 
     public LiveData<List<MedNotification>> getNotificationsForDateRange(long startDate, long endDate) {
         return notificationDao.getNotificationsForDateRange(startDate, endDate);
+    }
+
+    public LiveData<List<NotificationWithDetails>> getNotificationsWithDetails(long startDate, long endDate) {
+        return notificationDao.getNotificationsWithDetails(startDate, endDate);
     }
 }

@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mobileapp.medremiderapp.R;
 import com.mobileapp.medremiderapp.model.MedNotification;
+import com.mobileapp.medremiderapp.model.Medicine;
+import com.mobileapp.medremiderapp.model.DataFlowModels.NotificationWithDetails;
+import com.mobileapp.medremiderapp.model.Reminder;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -18,7 +21,7 @@ import java.util.Locale;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder> {
 
-    public final List<MedNotification> notificationList;
+    public final List<NotificationWithDetails> notificationList;
     private final OnNotificationActionListener listener;
 
     public interface OnNotificationActionListener {
@@ -26,7 +29,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         void onTakeClick(MedNotification notification);
     }
 
-    public NotificationAdapter(List<MedNotification> notificationList, OnNotificationActionListener listener) {
+    public NotificationAdapter(List<NotificationWithDetails> notificationList,
+                               OnNotificationActionListener listener) {
         this.notificationList = notificationList;
         this.listener = listener;
     }
@@ -41,19 +45,20 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public void onBindViewHolder(@NonNull NotificationViewHolder holder, int position) {
-        MedNotification notification = notificationList.get(position);
+        NotificationWithDetails notificationWithDetails = notificationList.get(position);
+        MedNotification notification = notificationWithDetails.notification;
+        Reminder reminder = notificationWithDetails.reminderWithMedicine.reminder;
+        Medicine medicine = notificationWithDetails.reminderWithMedicine.medicine;
 
         // Format time
         SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a", Locale.getDefault());
         String time = timeFormat.format(notification.getNotificationTime());
         holder.tvTime.setText(time);
 
-        // Set status text and background based on status
+        // Set status text and background
         holder.tvStatus.setText(notification.getStatus());
-
-        // Set background based on status
         int backgroundResId;
-        switch (notification.getStatus().toUpperCase()) {
+        switch (notification.getStatus()) {
             case MedNotification.STATUS_TAKEN:
                 backgroundResId = R.drawable.status_taken_background;
                 break;
@@ -67,17 +72,22 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
         holder.tvStatus.setBackgroundResource(backgroundResId);
 
-        // Set medicine information (you'll need to get this from your data)
-        // holder.tvMedicineName.setText(...);
-        // holder.tvDose.setText(...);
-        // holder.tvUnits.setText(...);
+        // Set medicine information
+        if (medicine != null) {
+            holder.tvMedicineName.setText(medicine.getName());
+            holder.tvDose.setText(medicine.getDose());
+        }
+
+        if (reminder != null) {
+            holder.tvUnits.setText(String.valueOf(reminder.getNumberOfUnits()));
+        }
 
         // Set button listeners
         holder.btnDismiss.setOnClickListener(v -> listener.onDismissClick(notification));
         holder.btnTake.setOnClickListener(v -> listener.onTakeClick(notification));
 
         // Show/hide buttons based on status
-        if (notification.getStatus().equalsIgnoreCase(MedNotification.STATUS_SCHEDULED)) {
+        if (notification.getStatus().equals(MedNotification.STATUS_SCHEDULED)) {
             holder.btnDismiss.setVisibility(View.VISIBLE);
             holder.btnTake.setVisibility(View.VISIBLE);
         } else {
@@ -85,7 +95,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             holder.btnTake.setVisibility(View.GONE);
         }
     }
-
     @Override
     public int getItemCount() {
         return notificationList.size();

@@ -7,34 +7,32 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.mobileapp.medremiderapp.model.MedNotification;
+import com.mobileapp.medremiderapp.model.DataFlowModels.NotificationWithDetails;
 import com.mobileapp.medremiderapp.repository.MedNotificationRepository;
 
 import java.util.List;
 
 public class HomeViewModel extends AndroidViewModel {
     private final MedNotificationRepository notificationRepository;
-    private final MutableLiveData<List<MedNotification>> notificationsForDate = new MutableLiveData<>();
-
+    private final MutableLiveData<List<NotificationWithDetails>> notificationsWithDetails = new MutableLiveData<>();
     public HomeViewModel(@NonNull Application application) {
         super(application);
         notificationRepository = new MedNotificationRepository(application);
     }
 
-    public LiveData<List<MedNotification>> getNotificationsForDate() {
-        return notificationsForDate;
+    public LiveData<List<NotificationWithDetails>> getNotificationsWithDetails() {
+        return notificationsWithDetails;
     }
 
     public void loadNotificationsForDate(long dateInMillis) {
-        // Calculate start and end of the day
         long startOfDay = dateInMillis;
         long endOfDay = startOfDay + 24 * 60 * 60 * 1000 - 1;
 
-        notificationRepository.getNotificationsForDateRange(startOfDay, endOfDay).observeForever(notifications -> {
-            notificationsForDate.setValue(notifications);
-        });
+        notificationRepository.getNotificationsWithDetails(startOfDay, endOfDay)
+                .observeForever(notifications -> {
+                    notificationsWithDetails.setValue(notifications);
+                });
     }
-
     public void updateNotificationStatus(int notificationId, String status) {
         notificationRepository.updateStatus(notificationId, status);
     }

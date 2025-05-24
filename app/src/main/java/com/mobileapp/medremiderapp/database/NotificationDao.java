@@ -5,9 +5,12 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.mobileapp.medremiderapp.model.MedNotification;
+import com.mobileapp.medremiderapp.model.DataFlowModels.NotificationWithDetails;
+
 import java.util.List;
 
 @Dao
@@ -38,4 +41,9 @@ public interface NotificationDao {
             "notificationTime BETWEEN :startDate AND :endDate " +
             "ORDER BY notificationTime ASC")
     LiveData<List<MedNotification>> getNotificationsForDateRange(long startDate, long endDate);
-}
+
+    @Transaction
+    @Query("SELECT * FROM med_notifications WHERE " +
+            "notificationTime BETWEEN :startDate AND :endDate " +
+            "ORDER BY notificationTime ASC")
+    LiveData<List<NotificationWithDetails>> getNotificationsWithDetails(long startDate, long endDate);}

@@ -33,4 +33,9 @@ public interface NotificationDao {
 
     @Query("DELETE FROM med_notifications WHERE reminderId = :reminderId")
     void deleteNotificationsForReminder(int reminderId);
+
+    @Query("SELECT * FROM med_notifications WHERE " +
+            "notificationTime BETWEEN :startDate AND :endDate " +
+            "ORDER BY notificationTime ASC")
+    LiveData<List<MedNotification>> getNotificationsForDateRange(long startDate, long endDate);
 }

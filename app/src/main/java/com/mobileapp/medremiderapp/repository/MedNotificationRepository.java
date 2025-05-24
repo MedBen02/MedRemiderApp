@@ -26,4 +26,8 @@ public class MedNotificationRepository {
     public void updateStatus(int notificationId, String status) {
         new Thread(() -> notificationDao.updateNotificationStatus(notificationId, status)).start();
     }
+
+    public LiveData<List<MedNotification>> getNotificationsForDateRange(long startDate, long endDate) {
+        return notificationDao.getNotificationsForDateRange(startDate, endDate);
+    }
 }

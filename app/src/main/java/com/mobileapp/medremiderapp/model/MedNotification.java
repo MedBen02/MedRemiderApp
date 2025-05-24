@@ -18,6 +18,10 @@ public class MedNotification {
     private String status; //"SCHEDULED", "DISMISSED", "TAKEN"
     private int reminderId;
 
+    public static final String STATUS_SCHEDULED = "SCHEDULED";
+    public static final String STATUS_TAKEN = "TAKEN";
+    public static final String STATUS_DISMISSED = "DISMISSED";
+
     public MedNotification() {
     }
 

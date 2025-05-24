@@ -3,6 +3,7 @@ package com.mobileapp.medremiderapp.ui.fragments.medicine;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +24,12 @@ import com.mobileapp.medremiderapp.databinding.FragmentMedicineBinding;
 import com.mobileapp.medremiderapp.factory.MedicineViewModelFactory;
 import com.mobileapp.medremiderapp.model.Medicine;
 import com.mobileapp.medremiderapp.model.User;
-import com.mobileapp.medremiderapp.model.rxnorm.DrugNameResponse;
-import com.mobileapp.medremiderapp.model.rxnorm.RxResponse;
+import com.mobileapp.medremiderapp.model.rxnorm.DrugConcept;
+import com.mobileapp.medremiderapp.model.rxnorm.DrugConceptGroup;
+import com.mobileapp.medremiderapp.model.rxnorm.RxNormResponse;
+import com.mobileapp.medremiderapp.network.ApiClient;
 import com.mobileapp.medremiderapp.ui.adapters.MedicineAdapter;
-import com.mobileapp.medremiderapp.utils.RetrofitClient;
-import com.mobileapp.medremiderapp.utils.RxNormApi;
+import com.mobileapp.medremiderapp.network.RxNormApi;
 import com.mobileapp.medremiderapp.viewmodels.MedicineViewModel;
 import com.mobileapp.medremiderapp.viewmodels.UserViewModel;
 import java.util.ArrayList;
@@ -135,52 +137,53 @@ public class MedicineFragment extends Fragment {
 
         autoCompleteTextView.setThreshold(3); // Start suggesting after 2 characters
 
-        autoCompleteTextView.addTextChangedListener(new TextWatcher() {
+        AutoCompleteTextView etMedicineName = dialogBinding.etMedicineName;
+        etMedicineName.setThreshold(2);
+        etMedicineName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() < 2) return;
+                if (s.length() >= 2) {
+                    RxNormApi api = ApiClient.getRxNormApi();
+                    Call<RxNormResponse> call = api.searchDrugs(s.toString());
 
-                RxNormApi api = RetrofitClient.getInstance().create(RxNormApi.class);
-                Call<DrugNameResponse> call = api.searchDrugsByName(s.toString());
+                    call.enqueue(new Callback<RxNormResponse>() {
+                        @Override
+                        public void onResponse(Call<RxNormResponse> call, Response<RxNormResponse> response) {
+                            if (response.isSuccessful() && response.body() != null &&
+                                    response.body().getDrugGroup() != null &&
+                                    response.body().getDrugGroup().getConceptGroup() != null) {
 
-                call.enqueue(new Callback<DrugNameResponse>() {
-                    @Override
-                    public void onResponse(Call<DrugNameResponse> call, Response<DrugNameResponse> response) {
-                        if (response.isSuccessful() && response.body() != null && response.body().drugGroup != null) {
-                            List<DrugNameResponse.ConceptGroup> groups = response.body().drugGroup.conceptGroup;
-
-                            if (groups != null) {
                                 List<String> suggestions = new ArrayList<>();
-
-                                for (DrugNameResponse.ConceptGroup group : groups) {
-                                    if (group.conceptProperties != null) {
-                                        for (DrugNameResponse.ConceptProperties cp : group.conceptProperties) {
-                                            suggestions.add(cp.name);
+                                for (DrugConceptGroup group : response.body().getDrugGroup().getConceptGroup()) {
+                                    if (group.getConceptProperties() != null) {
+                                        for (DrugConcept concept : group.getConceptProperties()) {
+                                            suggestions.add(concept.getName());
                                         }
                                     }
                                 }
 
-                                nameAdapter.clear();
-                                nameAdapter.addAll(suggestions);
-                                nameAdapter.notifyDataSetChanged();
+                                ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+                                        android.R.layout.simple_dropdown_item_1line, suggestions);
+                                etMedicineName.setAdapter(adapter);
+                                adapter.notifyDataSetChanged();
                             }
                         }
-                    }
 
-
-                    @Override
-                    public void onFailure(Call<DrugNameResponse> call, Throwable t) {
-                        // Optionally log or toast
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<RxNormResponse> call, Throwable t) {
+                            Log.e("RxNorm", "Failed: " + t.getMessage());
+                        }
+                    });
+                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {}
         });
+
 
         // Show the dialog
         new AlertDialog.Builder(requireContext())
